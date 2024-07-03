@@ -26,7 +26,12 @@ class _InputState extends State<Input> {
           SizedBox(
               // Lesson 1 - MediaQuery
               height: MediaQuery.of(context).size.height * .15,
-              child: Image.asset('assets/piggy-bank.png')),
+              child: Image.asset(
+                'assets/piggy-bank.png',
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : null,
+              )),
           //           textfields(goal,current_savings,monthly_contribution)
           // Lesson 2 - Material Styles
           Text(
