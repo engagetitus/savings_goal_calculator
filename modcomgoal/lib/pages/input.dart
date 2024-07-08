@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,7 +16,8 @@ class _InputState extends State<Input> {
   final _goal = TextEditingController();
   final _current = TextEditingController();
   final _monthly = TextEditingController();
-  DateTime now = DateTime.now(); // creating an instance ot datetime
+  final _date = TextEditingController();
+  DateTime? selectedDate; // creating an instance ot datetime
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +42,8 @@ class _InputState extends State<Input> {
             style: Theme.of(context).textTheme.displayMedium,
           ),
           Text(
-            'Starting: ' + DateFormat('EEEE, MM/d/y').format(now),
+            'Starting: ' +
+                '${selectedDate == null ? ' Note Selected' : DateFormat('EEEE, MM/d/y').format(selectedDate ?? DateTime.now())}',
             style: Theme.of(context).textTheme.titleLarge,
           ),
 
@@ -62,6 +66,16 @@ class _InputState extends State<Input> {
                     decoration: const InputDecoration(labelText: 'Monthly'),
                   ),
                   // datetimepicker (start_date)
+                  TextFormField(
+                    readOnly: true,
+                    onTap: () async {
+                      // WAIT for user to select Date
+                      _selectDate();
+                    },
+                    controller: _date,
+                    decoration:
+                        const InputDecoration(labelText: 'Start Saving'),
+                  ),
                   // button (calculate)
                   Row(
                     children: [
@@ -72,7 +86,7 @@ class _InputState extends State<Input> {
                                 'goal': _goal.text,
                                 'current': _current.text,
                                 'monthly': _monthly.text,
-                                'date': now
+                                'date': selectedDate
                               };
                               // navigate to display
                               Navigator.push(
@@ -93,5 +107,22 @@ class _InputState extends State<Input> {
         ],
       ),
     );
+  }
+
+  Future _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().subtract(const Duration(days: 7)),
+        lastDate: DateTime.now().add(const Duration(days: 60)));
+    if (picked != null) {
+      setState(() {
+        // update Controller
+        _date.text =
+            DateFormat('EEEE, MM/d/y').format(selectedDate ?? DateTime.now());
+        selectedDate = picked;
+      });
+    }
+    // save date to _date (Format)
   }
 }
