@@ -86,7 +86,7 @@ class _InputState extends State<Input> {
                                 'goal': _goal.text,
                                 'current': _current.text,
                                 'monthly': _monthly.text,
-                                'date': selectedDate
+                                'date': selectedDate ?? DateTime.now()
                               };
                               // navigate to display
                               Navigator.push(
